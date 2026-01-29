@@ -24,6 +24,9 @@ public class DriverFactory {
         String platformName = platform != null ? platform.toLowerCase() : "android";
 
         try {
+            // Load platform-specific locators
+            LocatorReader.loadLocators(platformName);
+
             if (platformName.equals("android")) {
                 driver = createAndroidDriver();
             } else if (platformName.equals("ios")) {

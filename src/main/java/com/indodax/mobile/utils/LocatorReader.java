@@ -9,17 +9,28 @@ import java.util.Properties;
 
 public class LocatorReader {
     private static Properties properties;
-    private static final String LOCATOR_FILE = "locators-android.properties";
+    private static String currentPlatform = "android"; // Default to Android
 
     static {
+        loadLocators(currentPlatform);
+    }
+
+    /**
+     * Load locators for specified platform
+     */
+    public static void loadLocators(String platform) {
+        currentPlatform = platform.toLowerCase();
+        String locatorFile = "locators-" + currentPlatform + ".properties";
+
         properties = new Properties();
-        try (InputStream input = LocatorReader.class.getClassLoader().getResourceAsStream(LOCATOR_FILE)) {
+        try (InputStream input = LocatorReader.class.getClassLoader().getResourceAsStream(locatorFile)) {
             if (input == null) {
-                throw new RuntimeException("Unable to find " + LOCATOR_FILE);
+                throw new RuntimeException("Unable to find " + locatorFile);
             }
             properties.load(input);
+            System.out.println("✅ Loaded locators from: " + locatorFile);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load locators: " + e.getMessage());
+            throw new RuntimeException("Failed to load locators from " + locatorFile + ": " + e.getMessage());
         }
     }
 
